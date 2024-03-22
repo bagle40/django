@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load static %}
+{% load carts_tags %}
+{%user_carts request as carts%}
+{% block content %}
+<div class="checkout-main-area pt-120 pb-120">
+    <div class="container">
+            <div class="checkout-wrap pt-30">
+                <div class="row">
+                    <div class="col-lg-7">
+                        <div class="billing-info-wrap mr-50">
+                            <h3>Платежные данные</h3>
+                            <form id="form" action="{% url "orders:create_order" %}" method='post'>
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="billing-info mb-20">
+                                            <label for="id_first_name" class="required">Имя*</label>
+                                            <input id="id_first_name" name="first_name" class="billing-address" placeholder="Имя" type="text" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="billing-info mb-20">
+                                            <label for="id_last_name" class="required">Фамилия*</label>
+                                            <input id="id_last_name" name="last_name" class="billing-address" placeholder="Фамилия" type="text"  required>
+                                        </div>
+                                    </div>
+                                  
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="billing-info mb-20">
+                                            <label for="id_phone_number" class="required">Телефон*</label>
+                                            <input id="id_phone_number" name="phone_number" class="billing-address" placeholder="Телефон" type="text" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="billing-info mb-20">
+                                            <label for="id_delivery_address">Адрес*</label>
+                                            <input id="id_delivery_address" name="delivery_address" class="billing-address" placeholder="Адрес" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="additional-info-wrap">
+                                    <label for="id_coment_order">Коментрарий к заказу</label>
+                                    <textarea id="id_coment_order"  name="coment_order" placeholder="Коментрарий к вашему заказу, например, особые указания по доставке."></textarea>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="your-order-area">
+                            <h3>Ваш заказ</h3>
+                            <div class="your-order-wrap gray-bg-4">
+                                <div class="your-order-info-wrap">
+                                    <div class="your-order-info">
+                                        <ul>
+                                            <li>Товары<span>Сумма</span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="your-order-middle">
+                                        <ul>
+                                        {% for cart in carts  %}
+                                            <li>{{cart.product.name}}   X {{cart.quantity}} <span>{{cart.products_price}} ₽</span></li>
+                                        {% endfor %}
+                                            
+                                        </ul>
+                                    </div>
+                                    <div class="your-order-info order-total">
+                                        <ul>
+                                            <li>Итоговая сумма: <span>{{carts.total_price}} ₽ </span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="payment-method">
+                                    <div class="pay-top sin-payment">
+                                        <input id="id_payment_on_get" class="input-radio" type="radio" value="0" checked="checked" name="payment_on_get" form="form">
+                                        <label for="id_payment_on_get">БАНКОВСКОЙ КАРТОЙ </label>
+                                        <div class="payment-box payment_method_bacs">
+                                            <p>Произведите платеж непосредственно на наш банковский счет. </p>
+                                        </div>
+                                    </div>
+                                    <div class="pay-top sin-payment">
+                                        <input id="id_payment_on_get" class="input-radio" type="radio" value="1" name="payment_on_get" form="form">
+                                        <label for="id_payment_on_get">ОПЛАТА ПРИ ПОЛУЧЕНИИ</label>
+                                        <div class="payment-box payment_method_bacs">
+                                            <p>Оплачивайте при получении</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="Place-order">
+                                <button name="yookassa-payment" id="sumbit" href="#">Оплатить</button>
+                            </div>
+                        </div>
+                    </div>
+              
+                </div>
+            </div>
+        
+    </div>
+</div><script>
+    document.getElementById("sumbit").addEventListener("click", function(event) {
+      event.preventDefault(); // Предотвращаем действие по умолчанию (переход по ссылке)
+      document.getElementById("form").submit(); // Отправляем форму
+    });
+    </script>
+{% endblock content %}

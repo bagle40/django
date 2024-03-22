@@ -1,0 +1,316 @@
+{% extends "base.html" %}
+{% load static %}
+{% load goods_tags %}
+
+{% block content %}
+
+
+<div class="shop-area pt-120 pb-120">
+    <div class="container">
+        <div class="row flex-row-reverse">
+            <div class="col-lg-9">
+
+                <div class="shop-topbar-wrapper">
+                    <div class="shop-topbar-left">
+                        <div class="view-mode nav">
+                            <a class="active" href="#shop-1" data-toggle="tab"><i class="icon-grid"></i></a>
+                        </div>
+                        <p>Показано <span>{% if onpage %}{{onpage}}{% else %}1{% endif %}</span> из 36</p>
+                        
+                    </div>
+                        <div class="product-sorting-wrapper">
+                            <div class="product-shorting shorting-style">
+                                <label>Показать:</label>
+                            <form action="{% if request.GET.search %}{% url "catalog:search" %}{% else %}{% url "catalog:index" slug_url %}{%endif%}" method='get' id="myForm">
+                                {% if request.GET.search %}
+                                    <input type="hidden" name="search" value="{{ request.GET.search }}">
+                                {% endif %}
+                                {% if request.GET.size %}
+                                    <input type="hidden" name="size" value="{{ request.GET.size }}">
+                                {% endif %}
+                                    <select id="onpage" name="onpage">
+                                        <option name="onpage" value="1">12</option>
+                                        <option name="onpage" value="2" {% if request.GET.onpage == '2' %} selected{% endif %}> 2</option>
+                                        <option name="onpage" value="36" {% if request.GET.onpage == '36' %} selected{% endif %}> 36</option>
+                                    </select>
+                            
+                            </div>
+                            <div class="product-show shorting-style">
+                                <label>Стоимость по :</label>
+                                <select id="sorted" name="sorted">
+                                    <option value="default" >По умолчанию</option>
+                                    <option name="sorted" value="price_desc" {% if request.GET.sorted  == 'price_desc' %} selected{% endif %}>убыванию</option>
+                                    <option name="sorted" value="price_asc" {% if request.GET.sorted == 'price_asc' %} selected{% endif %}>возрастанию</option>
+                                </select>
+                            </div>
+                            </form>
+                        </div>
+                    
+                </div>
+                
+                <div class="shop-bottom-area">
+                    <div class="tab-content jump">
+                        <div id="shop-1" class="tab-pane active">
+                            <div class="row">
+                                {% for product in goods %}
+                                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
+                                    <div class="single-product-wrap mb-35">
+                                        <div class="product-img product-img-zoom mb-15">
+                                            <a href="{% url "catalog:product" product.slug %}">
+                                                {% if product.image %}
+                                                <img src="{{product.image.url}}" alt="">
+                                                {% else %}
+                                                    <img src="{% static "deps/images/product/product-14.jpg" %}" alt="{{product.name}}">
+                                                {% endif %}
+                                            </a>
+                                            
+                                        </div>
+                                        <div class="product-content-wrap-2 text-center">
+                                            <div class="product-rating-wrap">
+                                                <div class="product-rating">
+                                                    <i class="icon_star"></i>
+                                                    <i class="icon_star"></i>
+                                                    <i class="icon_star"></i>
+                                                    <i class="icon_star"></i>
+                                                    <i class="icon_star gray"></i>
+                                                </div>
+                                                <span>(2)</span>
+                                            </div>
+                                            <h3><a href="{% url "catalog:product" product.slug %}">{{product.name}}</a></h3>
+                                            <div class="product-price-2">
+                                                <span>{{product.price}} ₽</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-content-wrap-2 product-content-position text-center">
+                                            <div class="product-rating-wrap">
+                                                <div class="product-rating">
+                                                    <i class="icon_star"></i>
+                                                    <i class="icon_star"></i>
+                                                    <i class="icon_star"></i>
+                                                    <i class="icon_star"></i>
+                                                    <i class="icon_star gray"></i>
+                                                </div>
+                                                <span>(2)</span>
+                                            </div>
+                                            <h3><a href="{% url "catalog:product" product.slug %}">{{product.name}}</a></h3>
+                                            <div class="product-price-2">
+                                                <span>{{product.price}} ₽</span>
+                                            </div>
+                                            <div class="pro-add-to-cart class=">
+                                                <a href="{% url "cart:cart_add"%}" class="btn btn-dark add-to-cart " data-product-id={{product.id}} > {% csrf_token %}Добавить в корзину</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                
+                            </div>
+                        </div>
+
+                        
+                    </div>
+
+                    <div class="pro-pagination-style text-center mt-10">
+                        <ul>
+                            <li class="page-item {% if not goods.has_previous %}disabled{% endif %}">
+                                <a class="prev" href="{% if goods.has_previous %}?{% change_params page=goods.previous_page_number%}{% else %}
+                                #
+                                {% endif %}">
+                                <i class="icon-arrow-left"></i></a></li>
+                            
+                            {% for page in goods.paginator.page_range %}
+                            {% if page >= goods.number|add:-2 and page <= goods.number|add:2%}
+                            {% if page == goods.number %}
+                            <li class="page-item">
+                                <a class='active' href="?{% change_params page=page%}">{{page}}</a>
+                                
+                            </li>
+                            {% else %}
+                            <li class="page-item">
+                                <a  href="?{% change_params page=page%}">{{page}}</a>
+                            </li>
+                            {% endif %}
+                            {% endif %}
+                            {% endfor %}
+                            
+
+                            <li class="page-item {% if not goods.has_next %}disabled{% endif %}">
+                                <a class="prev" href="{% if goods.has_next %}
+                                ?{% change_params page=goods.next_page_number%}
+                                {% else %}
+                                #
+                                {% endif %}">
+                                <i class="icon-arrow-right"></i></a></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="sidebar-wrapper sidebar-wrapper-mrg-right">
+                    <div class="sidebar-widget mb-40">
+                        <h4 class="sidebar-widget-title">Поиск</h4>
+                        <div class="sidebar-search">
+                            <form class="sidebar-search-form" action="{% url "catalog:search" %}" method="get">
+                                <input type="search" name='search' placeholder="Поиск...">
+                                <button>
+                                    <i class="icon-magnifier"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="sidebar-widget shop-sidebar-border mb-35 pt-40">
+                        <h4 class="sidebar-widget-title">Категории</h4>
+                        <div class="shop-catigory">
+                            <ul>
+                                {% for category in categories %}
+                                    <li >
+                                        <a {% if category.slug in current_url %}class="text-danger"{% endif %}  href="{% url "catalog:index" category.slug %}">{{category.name}}</a>
+                                    </li>
+                                   
+                                    
+                                    
+                                    
+                                {% endfor %}  
+                            </ul>
+                        </div>
+                    </div>
+                <form action="{% if request.GET.search %}{% url "catalog:search" %}{% else %}{% url "catalog:index" slug_url %}{%endif%}" method="get" id='myForm' > 
+                    {% if request.GET.search %}
+                        <input type="hidden" name="search" value="{{ request.GET.search }}">
+                    {% endif %}
+                    <div class="sidebar-widget shop-sidebar-border mb-40 pt-40">
+                        <h4 class="sidebar-widget-title">Бренд</h4>
+                        <div class="sidebar-widget-list">
+                            <ul>
+                                <li>
+                                    <div class="sidebar-widget-list-left">
+                                        <input id="Brands_1" type="radio" value="Adidas" name="brands" {% if request.GET.brands == 'Adidas' %}checked{% endif %}>
+                                        <label for="Brands_1" class="text-primary"><a  id="myLink" class="disabled">Adidas</a></label>
+                                        <span class="checkmark"></span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="sidebar-widget-list-left">
+                                        <input id="Brands_2" type="radio" value="Nike" name="brands" {% if request.GET.brands == 'Nike' %}checked{% endif %}>
+                                        <label for="Brands_2" class="text-primary"><a  id="myLink" class="disabled">Nike</a></label>
+                                        <span class="checkmark"></span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="sidebar-widget-list-left">
+                                        <input id="Brands_3" type="radio" value="Puma" name="brands" {% if request.GET.brands == 'Puma' %}checked{% endif %}>
+                                        <label for="Brands_3" class="text-primary"><a  id="myLink" class="disabled">Puma</a></label>
+                                        <span class="checkmark"></span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="sidebar-widget-list-left">
+                                        <input id="Brands_4" type="radio" value="NewBalance" name="brands" {% if request.GET.brands == 'NewBalance' %}checked{% endif %}>
+                                        <label for="Brands_4" class="text-primary"><a  id="myLink" class="disabled">NewBalance</a></label>
+                                        <span class="checkmark"></span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="sidebar-widget shop-sidebar-border mb-40 pt-40">
+                        <h4 class="sidebar-widget-title">Цвет</h4>
+                        <div class="sidebar-widget-list">
+                            <ul>
+                                <li>
+                                    <div class="sidebar-widget-list-left">
+                                        <input id="Color_1" type="radio" value="Белый" name="color" {% if request.GET.brands == 'Белый' %}checked{% endif %}>
+                                        <label for="Color_1" class="text-primary"><a  id="myLink" class="disabled">Белый</a></label>
+                                        <span class="checkmark"></span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="sidebar-widget-list-left">
+                                        <input id="Color_2" type="radio" value="Черный" name="color" {% if request.GET.brands == 'Черный' %}checked{% endif %}>
+                                        <label for="Color_2" class="text-primary"><a  id="myLink" class="disabled">Черный</a></label>
+                                        <span class="checkmark"></span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="sidebar-widget-list-left">
+                                        <input id="Color_3" type="radio" value="Красный" name="color" {% if request.GET.brands == 'Красный' %}checked{% endif %}>
+                                        <label for="Color_3" class="text-primary"><a  id="myLink" class="disabled">Красный</a></label>
+                                        <span class="checkmark"></span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="sidebar-widget-list-left">
+                                        <input id="Color_4" type="radio" value="Синий" name="color" {% if request.GET.brands == 'Синий' %}checked{% endif %}>
+                                        <label for="Color_4" class="text-primary"><a  id="myLink" class="disabled">Синий</a></label>
+                                        <span class="checkmark"></span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="sidebar-widget-list-left">
+                                        <input id="Color_5" type="radio" value="Желтый" name="color" {% if request.GET.brands == 'Желтый' %}checked{% endif %}>
+                                        <label for="Color_5" class="text-primary"><a  id="myLink" class="disabled">Желтый</a></label>
+                                        <span class="checkmark"></span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="sidebar-widget shop-sidebar-border mb-40 pt-40">
+                        <h4 class="sidebar-widget-title">Страна производства</h4>
+                        <div class="sidebar-widget-list">
+                            <ul>
+                                <li>
+                                    <div class="sidebar-widget-list-left">
+                                        <input id="country_build_1" type="radio" value="Россия" name="country" {% if request.GET.brands == 'Россия' %}checked{% endif %}>
+                                        <label for="country_build_1" class="text-primary"><a  id="myLink" class="disabled">Россия</a></label>
+                                        <span class="checkmark"></span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="sidebar-widget-list-left">
+                                        <input id="country_build_2" type="radio" value="Китай" name="country" {% if request.GET.country == 'Китай' %}checked{% endif %}>
+                                        <label for="country_build_2" class="text-primary"><a  id="myLink" class="disabled">Китай</a></label>
+                                        <span class="checkmark"></span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="sidebar-widget-list-left">
+                                        <input id="country_build_3" type="radio" value="США" name="country" {% if request.GET.brands == 'США' %}checked{% endif %}>
+                                        <label for="country_build_3" class="text-primary"><a  id="myLink" class="disabled">США</a></label>
+                                        <span class="checkmark"></span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="sidebar-widget-list-left">
+                                        <input id="country_build_4" type="radio" value="Германия" name="country" {% if request.GET.brands == 'Германия' %}checked{% endif %}>
+                                        <label for="country_build_4" class="text-primary"><a  id="myLink" class="disabled">Германия</a></label>
+                                        <span class="checkmark"></span>
+                                    </div>
+                                </li>
+                            </ul>
+
+
+                        </div>
+                        <button type="submit" class="btn btn-outline-danger mt-3">применить фильтры</button>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('onpage').onchange = function() {
+      document.getElementById('myForm').submit();
+    };
+    document.getElementById('sorted').onchange = function() {
+        document.getElementById('myForm').submit();
+      };
+
+
+  </script>
+ 
+
+{% endblock content %}

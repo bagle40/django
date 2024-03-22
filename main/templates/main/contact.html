@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+
+<div class="contact-area pt-115 pb-120">
+    <div class="container">
+        <div class="contact-info-wrap-3 pb-85">
+            <h3>Контактная информация</h3>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="single-contact-info-3 text-center mb-30">
+                        <i class="icon-location-pin "></i>
+                        <h4>Наш адрес</h4>
+                        <p>Россия,Москва,улица Красная 123Б</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="single-contact-info-3 extra-contact-info text-center mb-30">
+                        <ul>
+                            <li><i class="icon-screen-smartphone"></i>+7 (900) 544-22-11</li>
+                            <li><i class="icon-envelope "></i> <a href="#">info@example.com</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="single-contact-info-3 text-center mb-30">
+                        <i class="icon-clock "></i>
+                        <h4>Рабочие время</h4>
+                        <p>Понедельник - Пятница. 10:00 - 18:00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="get-in-touch-wrap">
+            <h3>Связаться с нами</h3>
+            <div class="contact-from contact-shadow">
+                <form  action="{% url "main:contact" %}" method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6">
+                            <label for="id_username" class="required">Email*</label>
+                            <input id="id_username" name="username" type="text" placeholder="Логин"required>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <label for="id_e_mail" class="required">Email*</label>
+                            <input id="id_e_mail" name="e_mail" type="text" placeholder="Email"required>
+                        </div>
+                        <div class="col-lg-12 col-md-12">
+                            <label for="id_subject" class="required">Email*</label>
+                            <input id="id_subject" name="subject" type="text" placeholder="Тема" required>
+                        </div>
+                        <div class="col-lg-12 col-md-12">
+                            <label for="id_coment_text" class="required">Email*</label>
+                            <textarea id="id_coment_text" name="coment_text" placeholder="Ваше сообщение"></textarea>
+                        </div>
+                        <div class="col-lg-12 col-md-12">
+                            <button class="submit" type="submit">Отправить сообщение</button>
+                        </div>
+                    </div>
+                </form>
+                <p class="form-messege"></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

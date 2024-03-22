@@ -1,0 +1,1936 @@
+{% load static %}
+{% load goods_tags %}
+{% load carts_tags %}
+
+{%user_carts request as carts%}
+
+<!doctype html>
+<html class="no-js" lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{{title}}</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static "deps/images/favicon.png" %}">
+
+    <!-- All CSS is here
+	============================================ -->
+
+    <link rel="stylesheet" href="{% static "deps/css/vendor/bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static "deps/css/vendor/signericafat.css" %}">
+    <link rel="stylesheet" href="{% static "deps/css/vendor/cerebrisans.css" %}">
+    <link rel="stylesheet" href="{% static "deps/css/vendor/simple-line-icons.css" %}">
+    <link rel="stylesheet" href="{% static "deps/css/vendor/elegant.css" %}">
+    <link rel="stylesheet" href="{% static "deps/css/vendor/linear-icon.css" %}">
+    <link rel="stylesheet" href="{% static "deps/css/plugins/nice-select.css" %}">
+    <link rel="stylesheet" href="{% static "deps/css/plugins/easyzoom.css" %}">
+    <link rel="stylesheet" href="{% static "deps/css/plugins/slick.css" %}">
+    <link rel="stylesheet" href="{% static "deps/css/plugins/animate.css" %}">
+    <link rel="stylesheet" href="{% static "deps/css/plugins/magnific-popup.css" %}">
+    <link rel="stylesheet" href="{% static "deps/css/plugins/jquery-ui.css" %}">
+    <link rel="stylesheet" href="{% static "deps/css/style.css" %}">
+
+
+</head>
+<body>
+    
+    <div class="main-wrapper">
+        <header class="header-area">
+            <div class="container">
+                <div class="header-large-device">
+                    <div class="header-top header-top-ptb-2 border-bottom-1">
+                        <div class="row align-items-center">
+                            <div class="col-xl-4 col-lg-5">
+                                <div class="search-wrap-2">
+                                    <form action="{% url "catalog:search" %}" method="get">
+                                        <input placeholder="Поиск…"type="search" name='search'>
+                                        <button class="button-search"><i class="icon-magnifier"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-2">
+                                <div class="logo text-center">
+                                    <a href="{% url "main:index" %}"><img src="{% static "deps/images/logo/logo-2.png" %}" alt="logo"></a>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-5">
+                                <div class="header-top-right">
+                                    {% if not user.is_authenticated %}
+                                    <div class="header-login-regi">
+                                        <a href="{% url "users:login" %}"><i class="icon-user"></i> Вход / Регистрация</a>
+                                    </div>
+                                    {% else %}
+                                    <div class="header-login-regi">
+                                        <a href="{% url "users:profile" %}"><i class="icon-user"></i>Личный кабинет</a>
+                                    </div>
+                                    {% endif %}
+                                    <div class="header-cart-2">
+                                        <a class="cart-active" href="#"><i class="icon-basket-loaded"></i> <span class="black">{{carts.total_quantity}}</span> {{carts.total_price}} ₽</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="header-bottom">
+                        <div class="row align-items-center">
+                            <div class="col-12">
+                                <div class="main-menu main-menu-padding-2 main-menu-center main-menu-font-width-400 main-menu-lh-1">
+                                    <nav>
+                                        <ul>
+                                            <li><a href="{% url "main:index" %}">ГЛАВНАЯ</a>
+                                            </li>
+                                            <li><a href="">КАТАЛОГ</a>
+                                                <ul class="sub-menu-style">
+                                                {%tag_categories as categories%}
+                                                {% for category in categories %}
+                                                    <li><a href="{% url "catalog:index" category.slug  %}">{{category.name}}</a></li>
+                                                {% endfor %}    
+                                                </ul>
+                                            </li>
+                                            <li><a href="{% url "main:about" %}">О НАС</a>
+                                            </li>
+                                            <li><a href="{% url "main:contact" %}">КОНТАКТЫ</a></li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-small-device small-device-ptb-1">
+                    <div class="row align-items-center">
+                        <div class="col-6">
+                            <div class="mobile-logo">
+                                <a href="{% url "main:index" %}">
+                                    <img alt="" src="{% static "deps/images/logo/logo.png" %}">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="header-action header-action-flex">
+                                <div class="same-style-2">
+                                    <a href="{% url "users:login" %}"><i class="icon-user"></i></a>
+                                </div>
+                                <div class="same-style-2 header-cart">
+                                    <a class="cart-active" href="#">
+                                        <i class="icon-basket-loaded"></i><span id="goods-in-cart-count"class="pro-count black">{{carts.total_quantity}}</span>
+                                    </a>
+                                </div>
+                                <div class="same-style-2 main-menu-icon">
+                                    <a class="mobile-header-button-active" href="#"><i class="icon-menu"></i> </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- mini cart start -->
+        <div class="sidebar-cart-active">
+            <div class="sidebar-cart-all">
+                <a class="cart-close" href="#"><i class="icon_close"></i></a>
+                <div class="cart-content">
+                    <h3>Корзина</h3>
+                    <div id="cart-items-container"> 
+                        {% include "carts/includes/included_cart.html" %}
+                    </div>
+                    <div class="cart-checkout-btn">
+                        <a class="btn-hover cart-btn-style" href="{% url "user:user_cart" %}">Посмотреть корзину</a>
+                        <a class="no-mrg btn-hover cart-btn-style" href="{% url "orders:create_order" %}">Оплатить</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu start -->
+        <div class="mobile-header-active mobile-header-wrapper-style">
+            <div class="clickalbe-sidebar-wrap">
+                <a class="sidebar-close"><i class="icon_close"></i></a>
+                <div class="mobile-header-content-area">
+                    <div class="mobile-search mobile-header-padding-border-1">
+                        <form class="search-form" action="{% url "catalog:search" %}" method="get">
+                            <input type="search" name='search' placeholder="Поиск…">
+                            <button class="button-search"><i class="icon-magnifier"></i></button>
+                        </form>
+                    </div>
+                    <div class="mobile-menu-wrap mobile-header-padding-border-2">
+                        <!-- mobile menu start -->
+                        <nav>
+                            <ul class="mobile-menu">
+                                <li class="menu-item-has-children"><a href="{% url "main:index" %}">Главная</a>
+                                </li>
+                                <li class="menu-item-has-children "><a href="#">Каталог</a>
+                                    <ul class="dropdown">
+                                        {%tag_categories as categories%}
+                                        {% for category in categories %}
+                                            <li><a href="{% url "catalog:index" category.slug %}">{{category.name}}</a></li>
+                                        {% endfor %}
+                                       
+                                    </ul>
+                                </li>
+                                <li class="menu-item-has-children"><a href="{% url "main:about" %}">О нас</a>
+                                </li>
+                                <li><a href="{% url "main:contact" %}">Контакты</a></li>
+                            </ul>
+                        </nav>
+                        <!-- mobile menu end -->
+                    </div>
+                    <div class="mobile-social-icon">
+                        <a class="facebook" href="#"><i class="icon-social-facebook"></i></a>
+                        <a class="twitter" href="#"><i class="icon-social-twitter"></i></a>
+                        <a class="pinterest" href="#"><i class="icon-social-pinterest"></i></a>
+                        <a class="instagram" href="#"><i class="icon-social-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <div class="deal-area pt-150 pb-130 bg-img" style="background-image:url({% static "deps/images/bg/bg-1.jpg" %});">
+            <div class="container">
+                <div class="deal-content-1">
+                    <span>Скидка недели</span>
+                    <h2><span>50% На</span> Всю <br>Женскую Одежду</h2>
+                    <p>Успейте обновить свой гардероб сегодня и получите невероятные скидки на всю женскую обувь!</p>
+                    <div class="timer-wrap">
+                        <h4>Акция действует до:</h4>
+                        <h2><span>15.02.2024</span></h2>
+                    </div>
+                    <div class="deal-btn">
+                        <a href="product-details.html">Купить СЕЙЧАС</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="product-area pt-115 pb-110">
+            <div class="container">
+                <div class="section-title-2 text-center mb-45">
+                    <h2><span>Наши</span> Новинки</h2>
+                    <p>Мы всегда в курсе новых поступлений трендов</p>
+                </div>
+                <div class="product-slider-active dot-style-2 dot-style-2-position-static dot-style-2-mrg-1 dot-style-2-active-black">
+                    <div class="product-plr-1">
+                        <div class="single-product-wrap mb-35">
+                            <div class="product-img product-img-zoom mb-20">
+                                <a href="product-details.html">
+                                    <img src="{% static "deps/images/product/men.jpg" %}" alt="">
+                                </a>
+                            </div>
+                            <div class="product-content-2 text-center">
+                                <h3><a href="product-details.html"><span class="blod">Мужская</span> Одежда <span class="available-product">(56)</span></a></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-plr-1">
+                        <div class="single-product-wrap mb-35">
+                            <div class="product-img product-img-zoom mb-20">
+                                <a href="product-details.html">
+                                    <img src="{% static "deps/images/product/shoes.jpg" %}" alt="">
+                                </a>
+                            </div>
+                            <div class="product-content-2 text-center">
+                                <h3><a href="product-details.html"><span class="blod">Женская</span> Обувь <span class="available-product">(55)</span></a></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-plr-1">
+                        <div class="single-product-wrap mb-35">
+                            <div class="product-img product-img-zoom mb-20">
+                                <a href="product-details.html">
+                                    <img src="{% static "deps/images/product/kids.jpg" %}" alt="">
+                                </a>
+                            </div>
+                            <div class="product-content-2 text-center">
+                                <h3><a href="product-details.html"><span class="blod">Детская</span> Одежда <span class="available-product">(56)</span></a></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-plr-1">
+                        <div class="single-product-wrap mb-35">
+                            <div class="product-img product-img-zoom mb-20">
+                                <a href="product-details.html">
+                                    <img src="{% static "deps/images/product/women-ass.jpg" %}" alt="">
+                                </a>
+                            </div>
+                            <div class="product-content-2 text-center">
+                                <h3><a href="product-details.html"><span class="blod">Женские</span> Аксессуары <span class="available-product">(24)</span></a></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-plr-1">
+                        <div class="single-product-wrap mb-35">
+                            <div class="product-img product-img-zoom mb-20">
+                                <a href="product-details.html">
+                                    <img src="{% static "deps/images/product/men-a.jpg" %}" alt="">
+                                </a>
+                            </div>
+                            <div class="product-content-2 text-center">
+                                <h3><a href="product-details.html"><span class="blod">Мужские</span> Аксессуары <span class="available-product">(55)</span></a></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="product-area pb-80">
+            <div class="container">
+                <div class="section-title-2 text-center mb-45">
+                    <h2><span>Топ</span> Продаж</h2>
+                    <p>Самые продаваемые товары</p>
+                </div>
+                <div class="tab-content jump">
+                    <div id="product-1" class="tab-pane active">
+                        <div class="row">
+                            {% for product in goods %}
+                            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="{% url "catalog:product" product.slug %}">
+                                            {% if product.image %}
+                                            <img src="{{product.image.url}}" alt="">
+                                            {% else %}
+                                                <img src="{% static "deps/images/product/product-14.jpg" %}" alt="{{product.name}}">
+                                            {% endif %}
+                                        </a>
+                                        
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="{% url "catalog:product" product.slug %}">{{product.name}}</a></h3>
+                                        <div class="product-price-2">
+                                            <span>{{product.price}} ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="{% url "catalog:product" product.slug %}">{{product.name}}</a></h3>
+                                        <div class="product-price-2">
+                                            <span>{{product.price}} ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добваить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %} 
+                        </div>
+                    </div>
+                   
+                    <div id="product-2" class="tab-pane">
+                        <div class="row">
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                           <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                           <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <div id="product-3" class="tab-pane">
+                        <div class="row">
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="product-4" class="tab-pane">
+                        <div class="row">
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="product-5" class="tab-pane">
+                        <div class="row">
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="single-product-wrap mb-35">
+                                    <div class="product-img product-img-zoom mb-15">
+                                        <a href="product-details.html">
+                                            <img src="{% static "deps/images/product/product-13.jpg" %}" alt="">
+                                        </a>
+                                        <div class="product-action-2 tooltip-style-2">
+                                            <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-content-wrap-2 product-content-position text-center">
+                                        <div class="product-rating-wrap">
+                                            <div class="product-rating">
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star"></i>
+                                                <i class="icon_star gray"></i>
+                                            </div>
+                                            <span>(2)</span>
+                                        </div>
+                                        <h3><a href="product-details.html">Шорты для бега</a></h3>
+                                        <div class="product-price-2">
+                                            <span>2050 ₽</span>
+                                        </div>
+                                        <div class="pro-add-to-cart">
+                                            <button title="Add to Cart">Добавить в корзину</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="subscribe-area pt-115 pb-120 border-bottom-2">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-5 col-md-5">
+                        <div class="section-title-2">
+                            <h2><span>Оставайтесь</span> на связи</h2>
+                            <p>Получайте обновления, подписавшись на нашу рассылку новостей</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-7 col-md-7">
+                        <div id="mc_embed_signup" class="subscribe-form">
+                            <form id="mc-embedded-subscribe-form" class="validate subscribe-form-style" method="post" action="{% url "main:index" %}">
+                                {% csrf_token %}
+                                <div id="mc_embed_signup_scroll" class="mc-form">
+                                    <input id="id_e_mail"class="email" type="email" required="" placeholder="Введите свой E-mail адрес" name="e_mail" value="">
+                                    <div class="mc-news" aria-hidden="true">
+                                        <input type="text" value="" tabindex="-1" name="b_6bbb9b6f5827bd842d9640c82_05d85f18ef">
+                                    </div>
+                                    <div class="clear">
+                                        <input id="mc-embedded-subscribe" class="button" type="submit" name="subscribe" value="Подписаться">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer-area pt-85 pb-90">
+            <div class="container">
+                <div class="footer-top text-center">
+                    <div class="footer-menu footer-menu-mrg footer-menu-hover-border">
+                        <nav>
+                            <ul>
+                                <li><a class="active" href="{% url "main:index" %}">ГЛАВНАЯ</a></li>
+                                <li><a href="{% url "main:index" %}">КАТАЛОГ</a></li>
+                                <li><a href="{% url "main:about" %}">О НАС</a></li>
+                                <li><a href="{% url "main:contact" %}">КОНТАКТЫ</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="footer-middle footer-middle-mrg">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3">
+                            <div class="social-style-3-wrap xs-center">
+                                <span>Подпишись на нас</span>
+                                <div class="social-style-1">
+                                    <a href="#"><i class="icon-social-twitter"></i></a>
+                                    <a href="#"><i class="icon-social-facebook"></i></a>
+                                    <a href="#"><i class="icon-social-instagram"></i></a>
+                                    <a href="#"><i class="icon-social-youtube"></i></a>
+                                    <a href="#"><i class="icon-social-pinterest"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="contact-info-wrap-2 text-center">
+                                <div class="footer-logo footer-logo-mrg">
+                                    <a href="{% url "main:index" %}"><img src="{% static "deps/images/logo/logo.png" %}" alt="logo"></a>
+                                </div>
+                                <p>Россия,Москва,улица Красная 123Б</p>
+                                <p>+79001112233</p>
+                                <p>Norda@gmail.com.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- All JS is here
+============================================ -->
+
+    <script src="{% static "deps/js/vendor/modernizr-3.6.0.min.js" %}"></script>
+    <script src="{% static "deps/js/vendor/jquery-3.5.1.min.js" %}"></script>
+    <script src="{% static "deps/js/vendor/jquery-migrate-3.3.0.min.js" %}"></script>
+    <script src="{% static "deps/js/vendor/bootstrap.bundle.min.js" %}"></script>
+    <script src="{% static "deps/js/plugins/slick.js" %}"></script>
+    <script src="{% static "deps/js/plugins/jquery.syotimer.min.js" %}"></script>
+    <script src="{% static "deps/js/plugins/jquery.instagramfeed.min.js" %}"></script>
+    <script src="{% static "deps/js/plugins/jquery.nice-select.min.js" %}"></script>
+    <script src="{% static "deps/js/plugins/wow.js" %}"></script>
+    <script src="{% static "deps/js/plugins/jquery-ui-touch-punch.js" %}"></script>
+    <script src="{% static "deps/js/plugins/jquery-ui.js" %}"></script>
+    <script src="{% static "deps/js/plugins/magnific-popup.js" %}"></script>
+    <script src="{% static "deps/js/plugins/sticky-sidebar.js" %}"></script>
+    <script src="{% static "deps/js/plugins/easyzoom.js" %}"></script>
+    <script src="{% static "deps/js/plugins/scrollup.js" %}"></script>
+    <script src="{% static "deps/js/plugins/ajax-mail.js" %}"></script>
+
+
+
+    <script src="{% static "deps/js/main.js" %}"></script>
+    <script src="{% static "deps/js/jquery/jquery-3.7.0.min.js" %}"></script>
+    <script src="{% static "deps/js/jquery-ajax.js" %}"></script>
+</body>
+
+</html>

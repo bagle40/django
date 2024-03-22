@@ -1,0 +1,23 @@
+{% load static %}
+{% load carts_tags %}
+
+{%user_carts request as carts%}
+
+<ul>
+    {% for cart in carts %}
+    <li class="single-product-cart">
+        <div class="cart-img">
+            <a href="#"><img src="{{cart.product.image.url}}" alt=""></a>
+        </div>
+        <div class="cart-title">
+            <h4><a href="#">{{cart.product.name}}</a></h4>
+            <span> {{cart.quantity}} × {{cart.product.price}} </span>
+        </div>
+        <div class="cart-delete">
+            <a class="remove-from-cart" href="{% url "cart:cart_remove"%}" data-cart-id="{{cart.id}}">{% csrf_token %}×</a>
+        </div>
+    </li>
+    {% endfor %}
+</ul><div class="cart-total">
+    <h4>Всего: <span>{{carts.total_price}} ₽</span></h4>
+</div>
