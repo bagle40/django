@@ -10,7 +10,7 @@ from goods.utils import q_search
 def catalog(request,category_slug=None):
     
     page=request.GET.get('page', 1)
-    onpage=request.GET.get('onpage',)
+    onpage=request.GET.get('onpage',12)
     sorted=request.GET.get('sorted',)
     query=request.GET.get('search',)
     brands=request.GET.get('brands',)
@@ -76,7 +76,7 @@ def product(request,product_slug):
 
     context={
         'product':product,
-        'sub_title':product.name,
+        'title':product.name,
         'goods':goods,
     }
 

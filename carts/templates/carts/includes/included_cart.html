@@ -4,13 +4,20 @@
 {%user_carts request as carts%}
 
 <ul>
+{% if carts %}
     {% for cart in carts %}
     <li class="single-product-cart">
         <div class="cart-img">
-            <a href="#"><img src="{{cart.product.image.url}}" alt=""></a>
+            <a href="{% url "catalog:product" cart.product.slug %}">
+                {% if cart.product.image %}
+                    <img class="img-fluid ml-10" src="{{cart.product.image.url}}" alt="">
+                {% else %}
+                    <img src="{% static "deps/images/product/product-14.jpg" %}" alt="{{product.name}}">
+                {% endif %}
+            </a>
         </div>
         <div class="cart-title">
-            <h4><a href="#">{{cart.product.name}}</a></h4>
+            <h4><a href="{% url "catalog:product" cart.product.slug %}">{{cart.product.name}}</a></h4>
             <span> {{cart.quantity}} × {{cart.product.price}} </span>
         </div>
         <div class="cart-delete">
@@ -18,6 +25,9 @@
         </div>
     </li>
     {% endfor %}
+{% else %}
+    <p>Пустота в корзине — это лишь начало возможностей! Давайте вместе наполним ее красотой и удобством наших товаров.</p>
+{% endif %}
 </ul><div class="cart-total">
     <h4>Всего: <span>{{carts.total_price}} ₽</span></h4>
 </div>

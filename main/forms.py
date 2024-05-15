@@ -1,7 +1,7 @@
 from django import forms
 
 from main.models import Contact
-from main.models import Mailing
+
 
 
 class ContactForm(forms.ModelForm):
@@ -16,9 +16,9 @@ class ContactForm(forms.ModelForm):
 
 
 
-class MailingForm(forms.ModelForm):
-    class Meta:
-        model=Mailing
-        fields=['e_mail']
+# class MailingForm(forms.ModelForm):
+#     class Meta:
+#         model=Mailing
+#         fields=['e_mail']
 
-    e_mail=forms.CharField()
+#     e_mail=forms.CharField()

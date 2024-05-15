@@ -28,6 +28,7 @@ def create_order(request):
                             phone_number=form.cleaned_data['phone_number'],
                             delivery_address=form.cleaned_data['delivery_address'],
                             payment_on_get=form.cleaned_data['payment_on_get'],
+                            is_paid=form.cleaned_data['payment_on_get'],
                             coment_order=form.cleaned_data['coment_order'],
                         )
 
@@ -51,32 +52,35 @@ def create_order(request):
                             product.save()
 
 
+                        payment_on_get = form.cleaned_data['payment_on_get']
+                        print(payment_on_get)
+                        if payment_on_get == '1':
+                            # Оплата через YooKassa
+                            idempotence_key = uuid.uuid4()
+                            total_price = cart_item.products_price()
+                            currency = 'RUB'
+                            description = 'Оплата товаров из корзины'
 
+                            payment = Payment.create({
+                                'amount': {
+                                    'value': str(total_price),
+                                    'currency': currency
+                                },
+                                'confirmation': {
+                                    'type': 'redirect',
+                                    'return_url': request.build_absolute_uri(reverse('user:profile'))
+                                },
+                                'capture': True,
+                                'test': True,
+                                'description': description
+                            }, idempotence_key)
 
-                        # Оплата через YooKassa
-                        idempotence_key = uuid.uuid4()
-                        total_price = cart_item.products_price()
-                        currency = 'RUB'
-                        description = 'Оплата товаров из корзины'
-
-                        payment = Payment.create({
-                            'amount': {
-                                'value': str(total_price),
-                                'currency': currency
-                            },
-                            'confirmation': {
-                                'type': 'redirect',
-                                'return_url': request.build_absolute_uri(reverse('user:profile'))
-                            },
-                            'capture': True,
-                            'test': True,
-                            'description': description
-                        }, idempotence_key)
-
-                        confirmation_url = payment.confirmation.confirmation_url
-                        cart_items.delete()
-                        return redirect(confirmation_url)
-
+                            confirmation_url = payment.confirmation.confirmation_url
+                            cart_items.delete()
+                            return redirect(confirmation_url)
+                        else:
+                            cart_items.delete()
+                            return redirect('user:profile')
             except ValidationError as e:
                 return redirect('cart:order')
 

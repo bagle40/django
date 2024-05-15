@@ -6,6 +6,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
+                
                 <!-- My Account Page Start -->
                 <div class="myaccount-page-wrapper">
                     <!-- My Account Tab Menu Start -->
@@ -40,42 +41,38 @@
                                 <div class="tab-pane fade" id="orders" role="tabpanel">
                                     <div class="myaccount-content">
                                         <h3>Заказы</h3>
+                                        {% if orders %}
                                         <div class="myaccount-table table-responsive text-center">
                                             <table class="table table-bordered">
                                                 <thead class="thead-light">
                                                     <tr>
-                                                        <th>№ Заказа</th>
+                                                        <th>Название</th>
                                                         <th>Дата</th>
                                                         <th>Статус</th>
                                                         <th>Сумма</th>
-                                                        <th>Действие</th>
+                                                        
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td>1</td>
-                                                        <td>02.12.2023</td>
-                                                        <td>Оплачен</td>
-                                                        <td>264.50 ₽</td>
-                                                        <td><a href="cart.html" class="check-btn sqr-btn ">Посмотреть</a></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>2</td>
-                                                        <td>02.12.2023</td>
-                                                        <td>Доставлен</td>
-                                                        <td>264.50 ₽</td>
-                                                        <td><a href="cart.html" class="check-btn sqr-btn ">Посмотреть</a></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>3</td>
-                                                        <td>02.12.2023</td>
-                                                        <td>В ожидании</td>
-                                                        <td>264.50 ₽</td>
-                                                        <td><a href="cart.html" class="check-btn sqr-btn ">Посмотреть</a></td>
-                                                    </tr>
+                                            {% for order in orders %}     
+                                                {% for item in order.orderitem_set.all %}
+                                                <tr>
+                                                    <td>{{item.name}}</td>
+                                                    <td>{{item.created_timestamp|date:"d.m.Y"}}</td>
+                                                    <td>{{item.status}}</td>
+                                                    <td>{{ item.price}}</td>
+                            
+                                                {% endfor %}
+                                            {% endfor %}
+                                                </tr>
+                                                    
+                                                    
                                                 </tbody>
                                             </table>
                                         </div>
+                                        {% else %}
+                                            <p>Заказов нет, но идеи и страсть к красоте все еще здесь. Пока мы ожидаем ваших предпочтений, давайте вдохновимся вместе, чтобы сделать вашу покупку незабываемой.</p>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="address-edit" role="tabpanel">
@@ -84,7 +81,7 @@
                                         <address>
                                             <p><strong>{{form.first_name.value}} {{form.last_name.value}}</strong></p>
                                             <p>Адрес: {{form.address.value}}</p>
-                                            <p>Телефон: +7(900)538-45-57</p>
+                                            <p>E-mail: {{form.email.value}}</p>
                                         </address>
                                         <p> Для изменения информации перейдите в настройки профиля</p>
                                     </div>
@@ -124,7 +121,7 @@
                                                 <div class="single-input-item">
                                                     <label for="id_address" class="required">Адрес</label>
                                                     <input type="text" id="id_address" name="address"
-                                                    placeholder="Номер телефона"
+                                                    placeholder="Адрес"
                                                     value="{{ form.address.value }}" required />
                                                     {% if form.address.errors %}
                                                     <div class="alert alert-danger alert-dismissible fade show">{{form.email.errors}}</div>

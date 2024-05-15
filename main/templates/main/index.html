@@ -69,7 +69,7 @@
                                     </div>
                                     {% endif %}
                                     <div class="header-cart-2">
-                                        <a class="cart-active" href="#"><i class="icon-basket-loaded"></i> <span class="black">{{carts.total_quantity}}</span> {{carts.total_price}} ₽</a>
+                                        <a class="cart-active" href="#" ><i class="icon-basket-loaded"></i><span id="goods-in-cart-count"  class="pro-count red">{{carts.total_quantity}}</span></a>
                                     </div>
                                 </div>
                             </div>
@@ -117,7 +117,7 @@
                                 </div>
                                 <div class="same-style-2 header-cart">
                                     <a class="cart-active" href="#">
-                                        <i class="icon-basket-loaded"></i><span id="goods-in-cart-count"class="pro-count black">{{carts.total_quantity}}</span>
+                                        <i class="icon-basket-loaded"></i><span id="goods-in-cart-count-mobel"class="pro-count black">{{carts.total_quantity}}</span>
                                     </a>
                                 </div>
                                 <div class="same-style-2 main-menu-icon">
@@ -192,13 +192,13 @@
                 <div class="deal-content-1">
                     <span>Скидка недели</span>
                     <h2><span>50% На</span> Всю <br>Женскую Одежду</h2>
-                    <p>Успейте обновить свой гардероб сегодня и получите невероятные скидки на всю женскую обувь!</p>
+                    <p>Успейте обновить свой гардероб сегодня и получите невероятные скидки на всю женскую одежду!</p>
                     <div class="timer-wrap">
                         <h4>Акция действует до:</h4>
-                        <h2><span>15.02.2024</span></h2>
+                        <h2><span>01.07.2024</span></h2>
                     </div>
                     <div class="deal-btn">
-                        <a href="product-details.html">Купить СЕЙЧАС</a>
+                        <a href="/catalog/zhenskaya-odezhda/">Купить СЕЙЧАС</a>
                     </div>
                 </div>
             </div>
@@ -213,60 +213,60 @@
                     <div class="product-plr-1">
                         <div class="single-product-wrap mb-35">
                             <div class="product-img product-img-zoom mb-20">
-                                <a href="product-details.html">
+                                <a href="/catalog/muzhskaya-odezhda/">
                                     <img src="{% static "deps/images/product/men.jpg" %}" alt="">
                                 </a>
                             </div>
                             <div class="product-content-2 text-center">
-                                <h3><a href="product-details.html"><span class="blod">Мужская</span> Одежда <span class="available-product">(56)</span></a></h3>
+                                <h3><a href="/catalog/muzhskaya-odezhda/"><span class="blod">Мужская</span> Одежда <span class="available-product">(56)</span></a></h3>
                             </div>
                         </div>
                     </div>
                     <div class="product-plr-1">
                         <div class="single-product-wrap mb-35">
                             <div class="product-img product-img-zoom mb-20">
-                                <a href="product-details.html">
+                                <a href="/catalog/zhenskaya-odezhda/">
                                     <img src="{% static "deps/images/product/shoes.jpg" %}" alt="">
                                 </a>
                             </div>
                             <div class="product-content-2 text-center">
-                                <h3><a href="product-details.html"><span class="blod">Женская</span> Обувь <span class="available-product">(55)</span></a></h3>
+                                <h3><a href="/catalog/zhenskaya-odezhda/"><span class="blod">Женская</span> одежда <span class="available-product">(55)</span></a></h3>
                             </div>
                         </div>
                     </div>
                     <div class="product-plr-1">
                         <div class="single-product-wrap mb-35">
                             <div class="product-img product-img-zoom mb-20">
-                                <a href="product-details.html">
+                                <a href="/catalog/detskaya-odezhda/">
                                     <img src="{% static "deps/images/product/kids.jpg" %}" alt="">
                                 </a>
                             </div>
                             <div class="product-content-2 text-center">
-                                <h3><a href="product-details.html"><span class="blod">Детская</span> Одежда <span class="available-product">(56)</span></a></h3>
+                                <h3><a href="/catalog/detskaya-odezhda/"><span class="blod">Детская</span> Одежда <span class="available-product">(56)</span></a></h3>
                             </div>
                         </div>
                     </div>
                     <div class="product-plr-1">
                         <div class="single-product-wrap mb-35">
                             <div class="product-img product-img-zoom mb-20">
-                                <a href="product-details.html">
+                                <a href="/catalog/sportivnaya-odezhda/">
                                     <img src="{% static "deps/images/product/women-ass.jpg" %}" alt="">
                                 </a>
                             </div>
                             <div class="product-content-2 text-center">
-                                <h3><a href="product-details.html"><span class="blod">Женские</span> Аксессуары <span class="available-product">(24)</span></a></h3>
+                                <h3><a href="/catalog/sportivnaya-odezhda/"><span class="blod">Спортивная</span> одежда <span class="available-product">(24)</span></a></h3>
                             </div>
                         </div>
                     </div>
                     <div class="product-plr-1">
                         <div class="single-product-wrap mb-35">
                             <div class="product-img product-img-zoom mb-20">
-                                <a href="product-details.html">
+                                <a href="/catalog/aksessuary/">
                                     <img src="{% static "deps/images/product/men-a.jpg" %}" alt="">
                                 </a>
                             </div>
                             <div class="product-content-2 text-center">
-                                <h3><a href="product-details.html"><span class="blod">Мужские</span> Аксессуары <span class="available-product">(55)</span></a></h3>
+                                <h3><a href="/catalog/aksessuary/"><span class="blod">Роскошные</span> Аксессуары <span class="available-product">(55)</span></a></h3>
                             </div>
                         </div>
                     </div>
@@ -296,38 +296,18 @@
                                         
                                     </div>
                                     <div class="product-content-wrap-2 text-center">
-                                        <div class="product-rating-wrap">
-                                            <div class="product-rating">
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star gray"></i>
-                                            </div>
-                                            <span>(2)</span>
-                                        </div>
                                         <h3><a href="{% url "catalog:product" product.slug %}">{{product.name}}</a></h3>
                                         <div class="product-price-2">
                                             <span>{{product.price}} ₽</span>
                                         </div>
                                     </div>
                                     <div class="product-content-wrap-2 product-content-position text-center">
-                                        <div class="product-rating-wrap">
-                                            <div class="product-rating">
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star"></i>
-                                                <i class="icon_star gray"></i>
-                                            </div>
-                                            <span>(2)</span>
-                                        </div>
                                         <h3><a href="{% url "catalog:product" product.slug %}">{{product.name}}</a></h3>
                                         <div class="product-price-2">
                                             <span>{{product.price}} ₽</span>
                                         </div>
-                                        <div class="pro-add-to-cart">
-                                            <button title="Add to Cart">Добваить в корзину</button>
+                                        <div class="pro-add-to-cart class=">
+                                            <a href="{% url "cart:cart_add"%}" class="btn btn-dark add-to-cart " data-product-id={{product.id}} >{% csrf_token %}Добавить в корзину</a>
                                         </div>
                                     </div>
                                 </div>
@@ -1845,7 +1825,7 @@
                     </div>
                     <div class="col-lg-7 col-md-7">
                         <div id="mc_embed_signup" class="subscribe-form">
-                            <form id="mc-embedded-subscribe-form" class="validate subscribe-form-style" method="post" action="{% url "main:index" %}">
+                            <form id="mc-embedded-subscribe-form" class="validate subscribe-form-style" method="post" action="{% url "malling:index" %}">
                                 {% csrf_token %}
                                 <div id="mc_embed_signup_scroll" class="mc-form">
                                     <input id="id_e_mail"class="email" type="email" required="" placeholder="Введите свой E-mail адрес" name="e_mail" value="">
@@ -1927,10 +1907,11 @@
     <script src="{% static "deps/js/plugins/ajax-mail.js" %}"></script>
 
 
-
+    
     <script src="{% static "deps/js/main.js" %}"></script>
     <script src="{% static "deps/js/jquery/jquery-3.7.0.min.js" %}"></script>
     <script src="{% static "deps/js/jquery-ajax.js" %}"></script>
+
 </body>
 
 </html>

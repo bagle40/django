@@ -15,7 +15,7 @@
                         <div class="view-mode nav">
                             <a class="active" href="#shop-1" data-toggle="tab"><i class="icon-grid"></i></a>
                         </div>
-                        <p>Показано <span>{% if onpage %}{{onpage}}{% else %}1{% endif %}</span> из 36</p>
+                        <p>Показано <span>{% if onpage %}{{onpage}}{% else %}12{% endif %}</span> из 36</p>
                         
                     </div>
                         <div class="product-sorting-wrapper">
@@ -29,8 +29,8 @@
                                     <input type="hidden" name="size" value="{{ request.GET.size }}">
                                 {% endif %}
                                     <select id="onpage" name="onpage">
-                                        <option name="onpage" value="1">12</option>
-                                        <option name="onpage" value="2" {% if request.GET.onpage == '2' %} selected{% endif %}> 2</option>
+                                        <option name="onpage" value="12">12</option>
+                                        <option name="onpage" value="24" {% if request.GET.onpage == '24' %} selected{% endif %}>24</option>
                                         <option name="onpage" value="36" {% if request.GET.onpage == '36' %} selected{% endif %}> 36</option>
                                     </select>
                             
@@ -52,13 +52,14 @@
                     <div class="tab-content jump">
                         <div id="shop-1" class="tab-pane active">
                             <div class="row">
-                                {% for product in goods %}
-                                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
+                                {% if goods %}
+                                    {% for product in goods %}
+                                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
                                     <div class="single-product-wrap mb-35">
                                         <div class="product-img product-img-zoom mb-15">
                                             <a href="{% url "catalog:product" product.slug %}">
                                                 {% if product.image %}
-                                                <img src="{{product.image.url}}" alt="">
+                                                    <img src="{{product.image.url}}" alt="">
                                                 {% else %}
                                                     <img src="{% static "deps/images/product/product-14.jpg" %}" alt="{{product.name}}">
                                                 {% endif %}
@@ -66,32 +67,12 @@
                                             
                                         </div>
                                         <div class="product-content-wrap-2 text-center">
-                                            <div class="product-rating-wrap">
-                                                <div class="product-rating">
-                                                    <i class="icon_star"></i>
-                                                    <i class="icon_star"></i>
-                                                    <i class="icon_star"></i>
-                                                    <i class="icon_star"></i>
-                                                    <i class="icon_star gray"></i>
-                                                </div>
-                                                <span>(2)</span>
-                                            </div>
                                             <h3><a href="{% url "catalog:product" product.slug %}">{{product.name}}</a></h3>
                                             <div class="product-price-2">
                                                 <span>{{product.price}} ₽</span>
                                             </div>
                                         </div>
                                         <div class="product-content-wrap-2 product-content-position text-center">
-                                            <div class="product-rating-wrap">
-                                                <div class="product-rating">
-                                                    <i class="icon_star"></i>
-                                                    <i class="icon_star"></i>
-                                                    <i class="icon_star"></i>
-                                                    <i class="icon_star"></i>
-                                                    <i class="icon_star gray"></i>
-                                                </div>
-                                                <span>(2)</span>
-                                            </div>
                                             <h3><a href="{% url "catalog:product" product.slug %}">{{product.name}}</a></h3>
                                             <div class="product-price-2">
                                                 <span>{{product.price}} ₽</span>
@@ -101,9 +82,13 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                {% endfor %}
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+
+                                    <h2 class="text-center text-black-50 mb-45">К сожалению, в настоящий момент ассортимент данной категории временно исчерпан. Но не волнуйтесь, мы активно работаем над обновлением нашего ассортимента, чтобы предложить вам еще больше вариантов выбора. Пожалуйста, оставайтесь на связи и следите за нашими обновлениями!! </h2>
                                 
+                                {% endif %}
                             </div>
                         </div>
 

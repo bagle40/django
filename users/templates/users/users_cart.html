@@ -16,14 +16,21 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                         <form action="#">
                             <div class="table-content table-responsive cart-table-content">
+                            {% if carts %}
                                 <table>
                                     <tbody>
                                     {% for cart  in carts  %}
                                         <tr > 
                                             <td class="product-thumbnail">
-                                                <a href="#"><img class="img-fluid ml-10" src="{{cart.product.image.url}}" alt=""></a>
+                                                <a href="{% url "catalog:product" cart.product.slug %}">
+                                                    {% if cart.product.image %}
+                                                        <img class="img-fluid ml-10" src="{{cart.product.image.url}}" alt="">
+                                                    {% else %}
+                                                        <img src="{% static "deps/images/product/product-14.jpg" %}" alt="{{product.name}}">
+                                                    {% endif %}
+                                                </a>
                                             </td>
-                                            <td class="product-name font-weight-bold"><a href="#">{{cart.product.name}}</a></td>
+                                            <td class="product-name font-weight-bold"><a href="{% url "catalog:product" cart.product.slug %}">{{cart.product.name}}</a></td>
                                             <td class="product-name ">{{cart.product.price}} ₽</td>
                                             <td class="product-name">{{cart.quantity}} шт</td>
                                             <td class="product-subtotal">{{cart.products_price}}₽</td>
@@ -32,12 +39,12 @@
                                             </td>
                                     
                                         </tr>
-                                    
                                     {% endfor %}
-                            
-                                     
                                     </tbody>
                                 </table>
+                            {% else %}
+                                <p>Ваша корзина ждет своего момента славы! Давайте воплотим в жизнь ваши желания, наполняя ее эксклюзивными предметами из нашего ассортимента.</p>
+                            {% endif %}
                             </div>
                             <div class="row">
                                 <div class="col-lg-12">

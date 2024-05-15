@@ -15,16 +15,4 @@ class Contact(models.Model):
 
     def __str__(self):
         return f"Оюращение № {self.pk} | Пользователь {self.username}"
-    
 
-class Mailing(models.Model):
-    e_mail=models.CharField(max_length=50,unique=True,verbose_name="E-mail")
-
-    class Meta:
-        db_table = "mailing"
-        verbose_name = "Рассылка"
-        verbose_name_plural = "Рассылка"
-
-
-    def __str__(self):
-        return f"{self.e_mail}"

@@ -40,7 +40,7 @@ $(document).ready(function () {
 
             },
 
-            error: function (data) {
+            error: function (data) { 
                 console.log("Ошибка при добавлении товара в корзину");
             },
         });
@@ -76,7 +76,7 @@ $(document).ready(function () {
                 // Уменьшаем количество товаров в корзине (отрисовка)
                 cartCount -= data.quantity_deleted;
                 goodsInCartCount.text(cartCount);
-                $("#goods-in-cart-count").text(cartCount);
+                $("#goods-in-cart-count-mobel").text(cartCount);
                 
                 // Меняем содержимое корзины на ответ от django (новый отрисованный фрагмент разметки корзины)
                 var cartItemsContainer = $("#cart-items-container");

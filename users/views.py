@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth, messages
+from django.db.models import Prefetch
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from carts.models import Cart
-
+from orders.models import Order, OrderItem
 from users.forms import ProfileForm, UserLoginForm, UserRegistrationForm
 from users.models import User
 
@@ -33,14 +34,12 @@ def login(request):
                     
                     return HttpResponseRedirect(request.POST.get('next'))
                     
-                return HttpResponseRedirect(reverse('main:index'))
+                return HttpResponseRedirect(reverse('user:profile'))
     else:
         form=UserLoginForm()
 
-
     context={
-        'title':'Norda - Авторизация',
-        'sub_title':'Авторизация',
+        'title':'Авторизация',
         'form':form
     }
     return render(request,'users/login.html',context)
@@ -62,34 +61,39 @@ def registration(request):
             return HttpResponseRedirect(reverse('main:index'))
     else:
         form=UserRegistrationForm()
-   
+    
 
     context={
-        'title':'Norda - Регистрация',
-        'sub_title':'Регистрация',
+        'title':'Регистрация',
         'form':form
     }
     return render(request,'users/registration.html',context)
 
 @login_required
 def profile(request):
-    
-    if request.method=='POST':
-        form=ProfileForm(data=request.POST,instance=request.user)
+    if request.method == 'POST':
+        form = ProfileForm(data=request.POST, instance=request.user, files=request.FILES)
         if form.is_valid():
             form.save()
-            user=form.instance
-            auth.login(request,user)
-            
-            return HttpResponseRedirect(reverse('user:profile'))
+            messages.success(request, "Профайл успешно обновлен")
+            return HttpResponseRedirect(reverse('main:index'))
     else:
-        form=ProfileForm(instance=request.user)
+        form = ProfileForm(instance=request.user)
+
+    orders = Order.objects.filter(user=request.user).prefetch_related(
+                Prefetch(
+                    "orderitem_set",
+                    queryset=OrderItem.objects.select_related("product"),
+                )
+            ).order_by("-id")
+
+    
 
 
     context={
-        'title':'Norda - кабинет',
-        'sub_title':'Кабинет',
-        'form':form
+        'title':'Кабинет',
+        'form':form,
+        'orders':orders
     }
     return render(request,'users/profile.html',context)
 
@@ -97,7 +101,7 @@ def profile(request):
 
 def users_cart(request,):
     context={
-        'sub_title':'Корзина',
+        'title':'Корзина'
     }
     
     return render(request,'users/users_cart.html' ,context)

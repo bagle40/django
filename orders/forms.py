@@ -13,6 +13,6 @@ class CreateOrderForm(forms.ModelForm):
     last_name=forms.CharField()
     phone_number=forms.CharField()
     delivery_address=forms.CharField()
-    payment_on_get=forms.ChoiceField(choices=[("0", 'False'),("1", 'True'),],)
+    payment_on_get=forms.ChoiceField(choices=[("0", False),("1", True),],)
     coment_order= forms.CharField(required=False)
     
